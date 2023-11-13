@@ -1,0 +1,59 @@
+name: CI Workflow
+
+on:
+  push:
+  pull_request:
+  schedule:
+
+jobs:
+  apt_build:
+    name: Install package dependencies
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+      
+      - name: Run the build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: nvcr.io/nvidia/l4t-base:r35.1.0
+          run: |
+            apt install build-essential git curl cmake pkg-config make ninja-build
+            wget -q https://github.com/Keylost/jetson-ffmpeg/archive/refs/heads/master.zip
+            unzip master.zip && rm master.zip && cd jetson-ffmpeg-master
+            LD_LIBRARY_PATH=$(pwd)/stubs:$LD_LIBRARY_PATH   # tegra multimedia libs aren't available in image, so use stubs for ffmpeg build
+            mkdir build
+            cd build
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+            make -j$(nproc)
+            make install
+            cd ../../
+
+            # Install nv-codec-headers to enable ffnvcodec filters (scale_cuda)
+            wget -q https://github.com/FFmpeg/nv-codec-headers/archive/refs/heads/master.zip
+            unzip master.zip && rm master.zip && cd nv-codec-headers-master
+            make install
+            cd ../ && rm -rf nv-codec-headers-master
+
+            # Build ffmpeg with nvmpi patch
+            wget -q https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz
+            tar xaf ffmpeg-*.tar.xz && rm ffmpeg-*.tar.xz && cd ffmpeg-*
+            patch -p1 < ../jetson-ffmpeg-master/ffmpeg_patches/ffmpeg6.0_nvmpi.patch
+            export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
+            # enable Jetson codecs but disable dGPU codecs
+            ./configure --enable-nvmpi --enable-ffnvcodec --enable-cuda-llvm \
+              --disable-cuvid --disable-nvenc --disable-nvdec \
+              --enable-shared --disable-static --prefix=$INSTALL_PREFIX \
+            || (cat ffbuild/config.log && false)
+            make -j$(nproc)
+            make install
+            cd ../
+
+            rm -rf ffmpeg-* jetson-ffmpeg-master /usr/src/jetson_multimedia_api
+            apt-get purge -y build-essential clang cmake pkg-config
