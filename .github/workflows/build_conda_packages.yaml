@@ -5,10 +5,10 @@ on:
   pull_request:
 
 jobs:
-  apt_build:
+  build_conda_packages:
 
   
-    name: Install package dependencies
+    name: Build conda packages
     runs-on: ubuntu-22.04
 
     steps:
@@ -28,7 +28,7 @@ jobs:
           run: |
             apt -y update
             apt -y upgrade
-            apt install curl
+            apt -y install curl
             curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
             bash Miniforge3-$(uname)-$(uname -m).sh
             ~/miniforge3/condabin/conda install conda-build anaconda-client conda-forge-pinning
