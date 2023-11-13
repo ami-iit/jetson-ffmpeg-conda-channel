@@ -1,0 +1,39 @@
+name: CI Workflow
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  apt_build:
+
+  
+    name: Install package dependencies
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Run the build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: nvcr.io/nvidia/l4t-base:r35.1.0
+          options: -v ${{ github.workspace }}:/work
+          run: |
+            apt -y update
+            apt -y upgrade
+            apt install curl
+            curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+            bash Miniforge3-$(uname)-$(uname -m).sh
+            ~/miniforge3/condabin/conda install conda-build anaconda-client conda-forge-pinning
+            export CONDA_PREFIX=~/miniforge3
+            cd /work
+            conda mambabuild -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
+
+            
