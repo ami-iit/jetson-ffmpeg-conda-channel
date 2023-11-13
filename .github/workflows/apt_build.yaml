@@ -22,10 +22,11 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: nvcr.io/nvidia/l4t-base:r35.1.0
+          options: -v ${{ github.workspace }}:/work
           run: |
-            apt update
-            apt upgrade
-            apt install build-essential git curl cmake pkg-config make ninja-build unzip wget
+            apt -y update
+            apt -y upgrade
+            apt install -y build-essential git curl cmake pkg-config make ninja-build unzip wget
             wget -q https://github.com/Keylost/jetson-ffmpeg/archive/refs/heads/master.zip
             unzip master.zip && rm master.zip && cd jetson-ffmpeg-master
             LD_LIBRARY_PATH=$(pwd)/stubs:$LD_LIBRARY_PATH   # tegra multimedia libs aren't available in image, so use stubs for ffmpeg build
