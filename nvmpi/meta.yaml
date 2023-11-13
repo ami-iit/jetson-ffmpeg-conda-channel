@@ -1,0 +1,39 @@
+{% set name = "nvmpi" %}
+{% set version = "2023.11.13" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  - url: https://github.com/madsciencetist/jetson-ffmpeg/archive/4a33a2cca94970c92340191cdcc016a1636e39ad.zip
+    sha256: d3f84f1e2632c15a3892dc6c89f0cd6b4137e990b8aef8fe245cd8e75fbb5388
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(nvmpi, max_pin='x.x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - ninja
+    - cmake
+
+
+test:
+  commands:
+    - test -f ${PREFIX}/include/nvmpi.h  # [linux]
+    - test -f ${PREFIX}/lib/libnvmpi.so  # [linux]
+    - test -f ${PREFIX}/lib/pkgconfig/nvmpi.pc  # [linux]
+
+about:
+  home: https://github.com/madsciencetist/jetson-ffmpeg
+  license: MIT
+  license_file: LICENSE
+  summary: nvmpi
+
+extra:
+  recipe-maintainers:
+    - traversaro
