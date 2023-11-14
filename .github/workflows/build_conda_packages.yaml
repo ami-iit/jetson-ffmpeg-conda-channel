@@ -26,6 +26,9 @@ jobs:
           image: nvcr.io/nvidia/l4t-jetpack:r35.3.1
           options: -v ${{ github.workspace }}:/work
           run: |
+            ## Ensure conda-build put generated packages in a place that can be accessed from the host
+            mkdir /work/conda-bld
+            export CONDA_BLD_PATH=/work/conda-bld
             ## Install miniforge3
             apt -y update
             apt -y install curl git
