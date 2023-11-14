@@ -31,7 +31,9 @@ jobs:
             curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
             export CONDA_PREFIX=/root/miniforge3
             bash Miniforge3-$(uname)-$(uname -m).sh -b -p $CONDA_PREFIX
-            $CONDA_PREFIX/condabin/conda install -n base conda-build anaconda-client conda-forge-pinning
+            $CONDA_PREFIX/condabin/mamba install -n base conda-build anaconda-client conda-forge-pinning
+            # Workaround for https://github.com/conda/conda-build/issues/4984
+            $CONDA_PREFIX/condabin/mamba update -n base --all
             cd /work
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
 
