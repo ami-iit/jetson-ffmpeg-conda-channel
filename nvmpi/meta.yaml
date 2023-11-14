@@ -6,6 +6,7 @@ package:
   version: {{ version }}
 
 source:
+  # Make sure that this sha is coherent with the one used .github/workflows/build_conda_packages.yaml
   - url: https://github.com/madsciencetist/jetson-ffmpeg/archive/4a33a2cca94970c92340191cdcc016a1636e39ad.zip
     sha256: 01185ec2e1795178cc2e227b2055d2bd4bebcfc17544759c83a9d1951516d472
 

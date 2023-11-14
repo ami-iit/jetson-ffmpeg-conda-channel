@@ -40,7 +40,12 @@ jobs:
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
             ### Build ffmpeg with nvmpi patch
             git clone -b jetson-ffmpeg https://github.dev/ami-iit/ffmpeg-feedstock
-            cp ./ffmpeg_patches/ffmpeg6.0_nvmpi.patch ./ffmpeg-feedstock/recipe/patches
+            git clone https://github.com/madsciencetist/jetson-ffmpeg
+            cd jetson-ffmpeg
+            # Make sure that this sha is coherent with the one used in nvmpi/meta.yaml
+            git checkout 4a33a2cca94970c92340191cdcc016a1636e39ad
+            cd ..
+            cp ./jetson-ffmpeg/ffmpeg_patches/ffmpeg6.0_nvmpi.patch ./ffmpeg-feedstock/recipe/patches
             # Build ffmpeg gpl variant
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familygpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
             # Build ffmpeg lgpl variant
