@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/madsciencetist/jetson-ffmpeg/archive/4a33a2cca94970c92340191cdcc016a1636e39ad.zip
-    sha256: d3f84f1e2632c15a3892dc6c89f0cd6b4137e990b8aef8fe245cd8e75fbb5388
+    sha256: 01185ec2e1795178cc2e227b2055d2bd4bebcfc17544759c83a9d1951516d472
 
 build:
   number: 0
