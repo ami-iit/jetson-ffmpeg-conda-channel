@@ -2,12 +2,13 @@ name: CI Workflow
 
 on:
   push:
-  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   build_conda_packages:
 
-  
     name: Build conda packages
     runs-on: ubuntu-22.04
 
@@ -24,7 +25,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: nvcr.io/nvidia/l4t-jetpack:r35.3.1
-          options: -v ${{ github.workspace }}:/work
+          options: -v ${{ github.workspace }}:/work --env ANACONDA_API_TOKEN=${{ secrets.ANACONDA_API_TOKEN }}
           run: |
             ## Ensure conda-build put generated packages in a place that can be accessed from the host
             mkdir /work/conda-bld
@@ -53,4 +54,8 @@ jobs:
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familygpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
             # Build ffmpeg lgpl variant
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familylgpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
+            # List created packages
+            cd /work/conda-bld/linux-aarch64/
+            ls *.tar.bz2
+            anaconda upload --skip-existing *.tar.bz2
 
