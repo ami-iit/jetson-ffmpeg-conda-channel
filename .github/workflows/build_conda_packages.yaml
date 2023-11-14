@@ -26,6 +26,7 @@ jobs:
           image: nvcr.io/nvidia/l4t-base:r35.1.0
           options: -v ${{ github.workspace }}:/work
           run: |
+            ## Install miniforge3
             apt -y update
             apt -y install curl
             curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
@@ -34,7 +35,14 @@ jobs:
             $CONDA_PREFIX/condabin/mamba install -y -n base conda-build anaconda-client conda-forge-pinning
             # Workaround for https://github.com/conda/conda-build/issues/4984
             $CONDA_PREFIX/condabin/mamba update -y -n base --all
+            ### Build nvmpi
             cd /work
             $CONDA_PREFIX/condabin/conda run -n base conda build -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
+            ### Build ffmpeg with nvmpi patch
+            git clone -b jetson-ffmpeg https://github.dev/ami-iit/ffmpeg-feedstock
+            cp ./ffmpeg_patches/ffmpeg6.0_nvmpi.patch ./ffmpeg-feedstock/recipe/patches
+            # Build ffmpeg gpl variant
+            $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familygpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
+            # Build ffmpeg lgpl variant
+            $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familylgpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
 
-            
