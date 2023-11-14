@@ -27,13 +27,12 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: |
             apt -y update
-            apt -y upgrade
             apt -y install curl
             curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-            bash Miniforge3-$(uname)-$(uname -m).sh -b -p $HOME/miniforge3
-            export CONDA_PREFIX=~/miniforge3
-            $CONDA_PREFIX/condabin/conda install conda-build anaconda-client conda-forge-pinning
+            export CONDA_PREFIX=/root/miniforge3
+            bash Miniforge3-$(uname)-$(uname -m).sh -b -p $CONDA_PREFIX
+            $CONDA_PREFIX/condabin/conda -n base install conda-build anaconda-client conda-forge-pinning
             cd /work
-            conda mambabuild -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
+            $CONDA_PREFIX/condabin/conda run -n base conda build -m ${CONDA_PREFIX}/conda_build_config.yaml -c conda-forge nvmpi
 
             
