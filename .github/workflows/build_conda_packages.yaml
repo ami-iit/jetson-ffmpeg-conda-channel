@@ -23,12 +23,12 @@ jobs:
       - name: Run the build process with Docker
         uses: addnab/docker-run-action@v3
         with:
-          image: nvcr.io/nvidia/l4t-base:r35.1.0
+          image: nvcr.io/nvidia/l4t-jetpack:r35.3.1
           options: -v ${{ github.workspace }}:/work
           run: |
             ## Install miniforge3
             apt -y update
-            apt -y install curl
+            apt -y install curl git
             curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
             export CONDA_PREFIX=/root/miniforge3
             bash Miniforge3-$(uname)-$(uname -m).sh -b -p $CONDA_PREFIX
