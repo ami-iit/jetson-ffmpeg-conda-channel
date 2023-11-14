@@ -51,9 +51,9 @@ jobs:
             cd ..
             cp ./jetson-ffmpeg/ffmpeg_patches/ffmpeg6.1_nvmpi.patch ./ffmpeg-feedstock/recipe/patches
             # Build ffmpeg gpl variant
-            $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familygpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
+            $CONDA_PREFIX/condabin/conda run -n base conda build --no-test -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familygpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
             # Build ffmpeg lgpl variant
-            $CONDA_PREFIX/condabin/conda run -n base conda build -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familylgpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
+            $CONDA_PREFIX/condabin/conda run -n base conda build --no-test -m ./ffmpeg-feedstock/.ci_support/linux_aarch64_license_familylgpl.yaml -c conda-forge -c local ./ffmpeg-feedstock/recipe
             # List created packages
             cd /work/conda-bld/linux-aarch64/
             ls *.tar.bz2
