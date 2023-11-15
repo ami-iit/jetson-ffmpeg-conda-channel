@@ -2,8 +2,8 @@ name: CI Workflow
 
 on:
   push:
-#    branches:
-#      - master
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -57,5 +57,4 @@ jobs:
             # List created packages
             cd /work/conda-bld/linux-aarch64/
             ls *.tar.bz2
-            anaconda upload --skip-existing *.tar.bz2
-
+            $CONDA_PREFIX/condabin/conda run -n base anaconda upload --skip-existing *.tar.bz2
