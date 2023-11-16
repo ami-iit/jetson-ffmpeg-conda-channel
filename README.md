@@ -15,7 +15,7 @@ This repo contains scripts and documentation related to the **untested** [`jetso
 > **Do not install this packages on non-Jetson systems, as otherwise ffmpeg will fail due to the missing `l4t`-related libraries.**
 
 > [!IMPORTANT]  
-> **The packages in the ``jetson-ffmpeg` conda channel are meant to be used together with dependencies provided by `conda-forge`  channel.**
+> **The packages in the `jetson-ffmpeg` conda channel are meant to be used together with dependencies provided by `conda-forge`  channel.**
 
 To use the packages contained in the [`jetson-ffmpeg`](https://anaconda.org/jetson-ffmpeg), just add the `jetson-ffmpeg` to the channel used to create your conda environent, with a higher priority w.r.t. `conda-forge`, and then install `ffmpeg=*=*jetsonffmpeg*` . For example, if you want to create an environent with `opencv` and ffmpeg with jetson support, run:
 ~~~
