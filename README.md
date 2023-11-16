@@ -1,4 +1,4 @@
-# jetson-ffmpeg-conda-package-builder
+# jetson-ffmpeg-conda-channel
 
 > [!IMPORTANT]  
 > **The `jetson-ffmpeg` channel is currently untested, and may not work.**
